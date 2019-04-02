@@ -3,19 +3,10 @@ import 'backdrop_widget.dart';
 import 'converter_screen.dart';
 import 'category.dart';
 import 'category_tile.dart';
+import 'dart:async';
+import 'dart:convert';
 
 class CategoryRoute extends StatefulWidget {
-  List<Color> _colors = <Color>[
-    Colors.blueAccent,
-    Colors.redAccent,
-    Colors.greenAccent,
-    Colors.cyanAccent,
-    Colors.indigoAccent,
-    Colors.deepOrangeAccent,
-    Colors.purpleAccent,
-    Colors.amberAccent,
-  ];
-
   List<String> _names = <String>[
     "Length",
     "Area",
@@ -24,7 +15,7 @@ class CategoryRoute extends StatefulWidget {
     "Time",
     "Digital Storage",
     "Energy",
-    "Currency",
+    //"Currency",
   ];
 
   List<IconData> _icons = <IconData>[
@@ -35,7 +26,18 @@ class CategoryRoute extends StatefulWidget {
     Icons.access_time,
     Icons.sd_storage,
     Icons.flash_on,
-    Icons.attach_money,
+    //Icons.attach_money,
+  ];
+
+  List<Color> _colors = <Color>[
+    Colors.blueAccent,
+    Colors.redAccent,
+    Colors.greenAccent,
+    Colors.cyanAccent,
+    Colors.indigoAccent,
+    Colors.deepOrangeAccent,
+    Colors.purpleAccent,
+    //Colors.amberAccent,
   ];
 
   @override
@@ -49,22 +51,51 @@ class _CategoryRouteState extends State<CategoryRoute> {
   List<Category> _categories = <Category>[];
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    for (int i = 0; i < widget._names.length; i++) {
-      _categories.add(Category(
-          name: widget._names[i],
-          color: widget._colors[i],
-          icon: widget._icons[i]));
-      if (i == 0) {
-        _defaultCategory = _categories[i];
-      }
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    if (_categories.isEmpty) {
+      await _getLocalCategories();
     }
+  }
+
+  Future<void> _getLocalCategories() async {
+    final json = DefaultAssetBundle.of(context)
+        .loadString('assets/data/regular_units.json');
+
+    final data = JsonDecoder().convert(await json);
+
+    if (data is! Map) {
+      throw ('Data retrieved from API is not a Map');
+    }
+
+    setState(() {
+      for (int i = 0; i < widget._names.length; i++) {
+        _categories.add(Category.fromJson(
+            parsedJson: data,
+            colorJ: widget._colors[i],
+            iconJ: widget._icons[i],
+            nameJ: widget._names[i]));
+
+        if (i == 0) {
+          _defaultCategory = _categories[i];
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_categories.isEmpty) {
+      return Center(
+        child: Container(
+          height: 180.0,
+          width: 180.0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     // TODO: implement build
     return Backdrop(
       currentCategory:
@@ -103,14 +134,16 @@ class _CategoryRouteState extends State<CategoryRoute> {
       );
     } else {
       return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 3.0),
-          itemBuilder: (BuildContext context, int index) {
-            return CategoryTile(
-              category: _categories[index],
-              onTap: _onCategoryTap,
-            );
-          }, itemCount: _categories.length,);
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, childAspectRatio: 3.0),
+        itemBuilder: (BuildContext context, int index) {
+          return CategoryTile(
+            category: _categories[index],
+            onTap: _onCategoryTap,
+          );
+        },
+        itemCount: _categories.length,
+      );
     }
   }
 }
