@@ -175,7 +175,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
               alignedDropdown: true,
               child: DropdownButton(
                 items: _unitDropdownItems,
-                onChanged: null,
+                onChanged: (dynamic) => debugPrint("on changed"),
                 isExpanded: true,
                 hint: Text("Output Units",
                     style: TextStyle(
