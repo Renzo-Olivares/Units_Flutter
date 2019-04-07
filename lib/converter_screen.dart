@@ -14,6 +14,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
   Unit _inputUnits;
   Unit _outputUnits;
 
+  TextEditingController _controllerIn = TextEditingController();
+  TextEditingController _controllerOut = TextEditingController();
+
   List<DropdownMenuItem> _unitDropdownItems;
 
   @override
@@ -49,12 +52,14 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     child: Column(
                       children: <Widget>[
                         TextField(
+                          controller: _controllerIn,
+                          onChanged: _onChangeTextIn,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               labelText: "Input", border: OutlineInputBorder()),
                           style: Theme.of(context).textTheme.display1,
                         ),
-                        _buildDropdown(),
+                        _buildDropdown(true, _onChangeInput),
                       ],
                     ),
                   ),
@@ -73,12 +78,14 @@ class _ConverterScreenState extends State<ConverterScreen> {
                   child: Column(
                     children: <Widget>[
                       TextField(
+                          controller: _controllerOut,
+                          onChanged: _onChangeTextOut,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               labelText: "Output",
                               border: OutlineInputBorder()),
                           style: Theme.of(context).textTheme.display1),
-                      _buildDropdown(),
+                      _buildDropdown(false, _onChangeOutput),
                     ],
                   ),
                 )),
@@ -93,12 +100,14 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     child: Column(
                       children: <Widget>[
                         TextField(
+                          controller: _controllerIn,
+                          onChanged: _onChangeTextIn,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               labelText: "Input", border: OutlineInputBorder()),
                           style: Theme.of(context).textTheme.display1,
                         ),
-                        _buildDropdown(),
+                        _buildDropdown(true, _onChangeInput),
                       ],
                     ),
                   ),
@@ -117,12 +126,14 @@ class _ConverterScreenState extends State<ConverterScreen> {
                   child: Column(
                     children: <Widget>[
                       TextField(
+                          controller: _controllerOut,
+                          onChanged: _onChangeTextOut,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               labelText: "Output",
                               border: OutlineInputBorder()),
                           style: Theme.of(context).textTheme.display1),
-                      _buildDropdown(),
+                      _buildDropdown(false, _onChangeOutput),
                     ],
                   ),
                 )),
@@ -163,7 +174,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   ///function that creates dropdown widget
-  Widget _buildDropdown() {
+  Widget _buildDropdown(
+      bool selectionType, ValueChanged<dynamic> changeFunction) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Container(
@@ -174,10 +186,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
           child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButton(
+                value: selectionType ? _inputUnits.name : _outputUnits.name,
                 items: _unitDropdownItems,
-                onChanged: (dynamic) => debugPrint("on changed"),
+                onChanged: changeFunction,
                 isExpanded: true,
-                hint: Text("Output Units",
+                hint: Text("Select Units",
                     style: TextStyle(
                       color: Colors.black,
                     )),
@@ -185,5 +198,52 @@ class _ConverterScreenState extends State<ConverterScreen> {
         ),
       ),
     );
+  }
+
+  void _onChangeOutput(dynamic unitName) {
+    double conversion =
+        _getNewUnit(unitName).conversion / _outputUnits.conversion;
+    double newConvert = double.parse(_controllerOut.text);
+    String outputText = (newConvert * conversion).toString();
+
+    setState(() {
+      _outputUnits = _getNewUnit(unitName);
+      _controllerOut.text = outputText;
+    });
+  }
+
+  void _onChangeInput(dynamic unitName) {
+    setState(() {
+      _inputUnits = _getNewUnit(unitName);
+      _controllerOut.text = _conversion(_controllerIn.text, true);
+    });
+  }
+
+  void _onChangeTextIn(dynamic textInput) {
+    setState(() {
+      _controllerOut.text = _conversion(textInput, true);
+    });
+  }
+
+  void _onChangeTextOut(dynamic textInput) {
+    setState(() {
+      _controllerIn.text = _conversion(textInput, false);
+    });
+  }
+
+  Unit _getNewUnit(dynamic unitName) {
+    int newUnitIndex = widget.category.units
+        .indexWhere((Unit) => Unit.name.startsWith(unitName));
+    return widget.category.units[newUnitIndex];
+  }
+
+  String _conversion(dynamic textInput, bool isInput) {
+    double input = double.parse(textInput);
+    double conversion = isInput
+        ? (_outputUnits.conversion / _inputUnits.conversion)
+        : (_inputUnits.conversion / _outputUnits.conversion);
+    input = input * conversion;
+
+    return input.toString();
   }
 }
