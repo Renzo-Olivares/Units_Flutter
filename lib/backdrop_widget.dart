@@ -222,7 +222,7 @@ class _BackdropState extends State<Backdrop>
   }
 
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
-    const double panelTitleHeight = 48.0;
+    const double panelTitleHeight = 32.0;
     final Size panelSize = constraints.biggest;
     final double panelTop = panelSize.height - panelTitleHeight;
 
