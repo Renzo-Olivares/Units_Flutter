@@ -46,7 +46,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   Widget _buildConverterScreen(Orientation deviceOrientation){
     if (deviceOrientation == Orientation.portrait) {
-      return Column(
+      return ListView(
         children: <Widget>[
           Container(
             child: Padding(
@@ -94,24 +94,24 @@ class _ConverterScreenState extends State<ConverterScreen> {
         ],
       );
     } else {
-      return Row(
+      return GridView(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, childAspectRatio: 1.0),
         children: <Widget>[
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: _controllerIn,
-                    onChanged: _onChangeTextIn,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        labelText: "Input", border: OutlineInputBorder()),
-                    style: Theme.of(context).textTheme.display1,
-                  ),
-                  _buildDropdown(true, _onChangeInput),
-                ],
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  controller: _controllerIn,
+                  onChanged: _onChangeTextIn,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Input", border: OutlineInputBorder()),
+                  style: Theme.of(context).textTheme.display1,
+                ),
+                _buildDropdown(true, _onChangeInput),
+              ],
             ),
           ),
           Container(
@@ -122,23 +122,22 @@ class _ConverterScreenState extends State<ConverterScreen> {
                   color: Colors.black,
                 )),
           ),
-          Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    TextField(
-                        controller: _controllerOut,
-                        onChanged: _onChangeTextOut,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            labelText: "Output",
-                            border: OutlineInputBorder()),
-                        style: Theme.of(context).textTheme.display1),
-                    _buildDropdown(false, _onChangeOutput),
-                  ],
-                ),
-              )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                    controller: _controllerOut,
+                    onChanged: _onChangeTextOut,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: "Output",
+                        border: OutlineInputBorder()),
+                    style: Theme.of(context).textTheme.display1),
+                _buildDropdown(false, _onChangeOutput),
+              ],
+            ),
+          ),
         ],
       );
     }
