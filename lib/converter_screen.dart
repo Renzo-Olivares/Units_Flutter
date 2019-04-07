@@ -41,108 +41,107 @@ class _ConverterScreenState extends State<ConverterScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: OrientationBuilder(
-        builder: (BuildContext context, Orientation orientation) {
-          if (orientation == Orientation.portrait) {
-            return Column(
-              children: <Widget>[
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          controller: _controllerIn,
-                          onChanged: _onChangeTextIn,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              labelText: "Input", border: OutlineInputBorder()),
-                          style: Theme.of(context).textTheme.display1,
-                        ),
-                        _buildDropdown(true, _onChangeInput),
-                      ],
-                    ),
+      body: _buildConverterScreen(MediaQuery.of(context).orientation));
+  }
+
+  Widget _buildConverterScreen(Orientation deviceOrientation){
+    if (deviceOrientation == Orientation.portrait) {
+      return Column(
+        children: <Widget>[
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: _controllerIn,
+                    onChanged: _onChangeTextIn,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: "Input", border: OutlineInputBorder()),
+                    style: Theme.of(context).textTheme.display1,
                   ),
-                ),
-                Container(
-                  child: Center(
-                      child: Icon(
-                    Icons.import_export,
-                    size: 60.0,
-                    color: Colors.black,
-                  )),
-                ),
-                Container(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                          controller: _controllerOut,
-                          onChanged: _onChangeTextOut,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              labelText: "Output",
-                              border: OutlineInputBorder()),
-                          style: Theme.of(context).textTheme.display1),
-                      _buildDropdown(false, _onChangeOutput),
-                    ],
-                  ),
+                  _buildDropdown(true, _onChangeInput),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Center(
+                child: Icon(
+                  Icons.import_export,
+                  size: 60.0,
+                  color: Colors.black,
                 )),
-              ],
-            );
-          } else {
-            return Row(
-              children: <Widget>[
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          controller: _controllerIn,
-                          onChanged: _onChangeTextIn,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              labelText: "Input", border: OutlineInputBorder()),
-                          style: Theme.of(context).textTheme.display1,
-                        ),
-                        _buildDropdown(true, _onChangeInput),
-                      ],
-                    ),
-                  ),
+          ),
+          Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                        controller: _controllerOut,
+                        onChanged: _onChangeTextOut,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: "Output",
+                            border: OutlineInputBorder()),
+                        style: Theme.of(context).textTheme.display1),
+                    _buildDropdown(false, _onChangeOutput),
+                  ],
                 ),
-                Container(
-                  child: Center(
-                      child: Icon(
-                    Icons.swap_horiz,
-                    size: 60.0,
-                    color: Colors.black,
-                  )),
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                          controller: _controllerOut,
-                          onChanged: _onChangeTextOut,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              labelText: "Output",
-                              border: OutlineInputBorder()),
-                          style: Theme.of(context).textTheme.display1),
-                      _buildDropdown(false, _onChangeOutput),
-                    ],
+              )),
+        ],
+      );
+    } else {
+      return Row(
+        children: <Widget>[
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: _controllerIn,
+                    onChanged: _onChangeTextIn,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: "Input", border: OutlineInputBorder()),
+                    style: Theme.of(context).textTheme.display1,
                   ),
+                  _buildDropdown(true, _onChangeInput),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Center(
+                child: Icon(
+                  Icons.swap_horiz,
+                  size: 60.0,
+                  color: Colors.black,
                 )),
-              ],
-            );
-          }
-        },
-      ),
-    );
+          ),
+          Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                        controller: _controllerOut,
+                        onChanged: _onChangeTextOut,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: "Output",
+                            border: OutlineInputBorder()),
+                        style: Theme.of(context).textTheme.display1),
+                    _buildDropdown(false, _onChangeOutput),
+                  ],
+                ),
+              )),
+        ],
+      );
+    }
   }
 
   //create dropdown items
