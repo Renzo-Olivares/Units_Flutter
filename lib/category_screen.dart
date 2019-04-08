@@ -161,6 +161,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   Widget _buildCategoryScreen(Orientation deviceOrientation) {
     if (deviceOrientation == Orientation.portrait) {
       return ListView.builder(
+        itemExtent: 125.0,
         itemBuilder: (BuildContext context, int index) {
           return CategoryTile(
             category: _categories[index],
