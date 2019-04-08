@@ -19,7 +19,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   List<DropdownMenuItem> _unitDropdownItems;
 
-  bool _showValidationError = false;
+  bool _showValidationErrorIn = false;
+  bool _showValidationErrorOut = false;
 
   @override
   void initState() {
@@ -235,10 +236,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
       } else {
         try {
           _controllerOut.text = _conversion(textInput, true);
-          _showValidationError = false;
+          _showValidationErrorIn = false;
         } on Exception catch (e) {
           print('Error: $e');
-          _showValidationError = true;
+          _showValidationErrorIn = true;
         }
       }
     });
@@ -251,10 +252,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
       } else {
         try {
           _controllerIn.text = _conversion(textInput, false);
-          _showValidationError = false;
+          _showValidationErrorOut = false;
         } on Exception catch (e) {
           print('Error: $e');
-          _showValidationError = true;
+          _showValidationErrorOut = true;
         }
       }
     });
