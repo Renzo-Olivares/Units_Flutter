@@ -19,6 +19,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   List<DropdownMenuItem> _unitDropdownItems;
 
+  bool _showValidationError = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -58,6 +60,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     onChanged: _onChangeTextIn,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
+                      errorText: _showValidationError? 'Invalid number': null,
                         labelText: "Input", border: OutlineInputBorder()),
                     style: Theme.of(context).textTheme.display1,
                   ),
@@ -219,13 +222,33 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   void _onChangeTextIn(dynamic textInput) {
     setState(() {
-      _controllerOut.text = _conversion(textInput, true);
+      if(textInput == null || textInput.isEmpty){
+        _controllerOut.text = '';
+      }else{
+        try{
+          _controllerOut.text = _conversion(textInput, true);
+          _showValidationError = false;
+        }on Exception catch (e){
+          print('Error: $e');
+          _showValidationError = true;
+        }
+      }
     });
   }
 
   void _onChangeTextOut(dynamic textInput) {
     setState(() {
-      _controllerIn.text = _conversion(textInput, false);
+      if(textInput == null || textInput.isEmpty){
+        _controllerIn.text = '';
+      }else {
+        try{
+          _controllerIn.text = _conversion(textInput, false);
+          _showValidationError = false;
+        }on Exception catch(e){
+          print('Error: $e');
+          _showValidationError = true;
+        }
+      }
     });
   }
 
