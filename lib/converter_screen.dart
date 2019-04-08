@@ -62,7 +62,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         errorText:
-                            _showValidationError ? 'Invalid number' : null,
+                            _showValidationErrorIn ? 'Invalid number' : null,
                         labelText: "Input",
                         border: OutlineInputBorder()),
                     style: Theme.of(context).textTheme.display1,
@@ -91,7 +91,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         errorText:
-                            _showValidationError ? 'Invalid number' : null,
+                            _showValidationErrorOut ? 'Invalid number' : null,
                         labelText: "Output",
                         border: OutlineInputBorder()),
                     style: Theme.of(context).textTheme.display1),
@@ -115,7 +115,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                   onChanged: _onChangeTextIn,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      errorText: _showValidationError ? 'Invalid number' : null,
+                      errorText: _showValidationErrorIn ? 'Invalid number' : null,
                       labelText: "Input",
                       border: OutlineInputBorder()),
                   style: Theme.of(context).textTheme.display1,
@@ -142,7 +142,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         errorText:
-                            _showValidationError ? 'Invalid number' : null,
+                            _showValidationErrorOut ? 'Invalid number' : null,
                         labelText: "Output",
                         border: OutlineInputBorder()),
                     style: Theme.of(context).textTheme.display1),
