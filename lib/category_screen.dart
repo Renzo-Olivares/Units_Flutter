@@ -5,6 +5,8 @@ import 'category.dart';
 import 'category_tile.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'currencyApi.dart';
+import 'unit.dart';
 
 class CategoryRoute extends StatefulWidget {
   List<String> _names = <String>[
@@ -15,7 +17,7 @@ class CategoryRoute extends StatefulWidget {
     "Time",
     "Digital Storage",
     "Energy",
-    //"Currency",
+    "Currency",
   ];
 
   List<IconData> _icons = <IconData>[
@@ -26,7 +28,7 @@ class CategoryRoute extends StatefulWidget {
     Icons.access_time,
     Icons.sd_storage,
     Icons.flash_on,
-    //Icons.attach_money,
+    Icons.attach_money,
   ];
 
   List<Color> _colors = <Color>[
@@ -37,7 +39,7 @@ class CategoryRoute extends StatefulWidget {
     Colors.indigoAccent,
     Colors.deepOrangeAccent,
     Colors.purpleAccent,
-    //Colors.amberAccent,
+    Colors.amberAccent,
   ];
 
   @override
@@ -56,6 +58,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
 
     if (_categories.isEmpty) {
       await _getLocalCategories();
+      await _getApiCategory();
     }
   }
 
@@ -70,7 +73,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
     }
 
     setState(() {
-      for (int i = 0; i < widget._names.length; i++) {
+      for (int i = 0; i < widget._names.length - 1; i++) {
         _categories.add(Category.fromJson(
             parsedJson: data,
             colorJ: widget._colors[i],
@@ -82,6 +85,40 @@ class _CategoryRouteState extends State<CategoryRoute> {
         }
       }
     });
+  }
+
+  Future<void> _getApiCategory() async{
+    setState(() {
+      _categories.add(
+          Category(
+            color: widget._colors.last,
+            icon: widget._icons.last,
+            name: widget._names.last,
+            units: [],
+          )
+      );
+    });
+
+    final apiData = await currencyApi().getUnits('currency');
+
+    if(apiData != null){
+      final units = <Unit>[];
+      for(var unit in apiData){
+        units.add(Unit.fromJson(unit));
+      }
+
+      setState(() {
+        _categories.removeLast();
+        _categories.add(
+          Category(
+            name: widget._names.last,
+            units: units,
+            color: widget._colors.last,
+            icon: widget._icons.last,
+          )
+        );
+      });
+    }
   }
 
   @override
