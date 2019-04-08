@@ -233,6 +233,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
     setState(() {
       if (textInput == null || textInput.isEmpty) {
         _controllerOut.text = '';
+        _showValidationErrorIn = false;
       } else {
         try {
           _controllerOut.text = _conversion(textInput, true);
@@ -249,6 +250,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
     setState(() {
       if (textInput == null || textInput.isEmpty) {
         _controllerIn.text = '';
+        _showValidationErrorOut = false;
       } else {
         try {
           _controllerIn.text = _conversion(textInput, false);
