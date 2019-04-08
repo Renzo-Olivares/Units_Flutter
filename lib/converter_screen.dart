@@ -43,10 +43,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: _buildConverterScreen(MediaQuery.of(context).orientation));
+        body: _buildConverterScreen(MediaQuery.of(context).orientation));
   }
 
-  Widget _buildConverterScreen(Orientation deviceOrientation){
+  Widget _buildConverterScreen(Orientation deviceOrientation) {
     if (deviceOrientation == Orientation.portrait) {
       return ListView(
         children: <Widget>[
@@ -60,8 +60,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     onChanged: _onChangeTextIn,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      errorText: _showValidationError? 'Invalid number': null,
-                        labelText: "Input", border: OutlineInputBorder()),
+                        errorText:
+                            _showValidationError ? 'Invalid number' : null,
+                        labelText: "Input",
+                        border: OutlineInputBorder()),
                     style: Theme.of(context).textTheme.display1,
                   ),
                   _buildDropdown(true, _onChangeInput),
@@ -72,34 +74,36 @@ class _ConverterScreenState extends State<ConverterScreen> {
           Container(
             child: Center(
                 child: Icon(
-                  Icons.import_export,
-                  size: 60.0,
-                  color: Colors.black,
-                )),
+              Icons.import_export,
+              size: 60.0,
+              color: Colors.black,
+            )),
           ),
           Container(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    TextField(
-                        controller: _controllerOut,
-                        onChanged: _onChangeTextOut,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            labelText: "Output",
-                            border: OutlineInputBorder()),
-                        style: Theme.of(context).textTheme.display1),
-                    _buildDropdown(false, _onChangeOutput),
-                  ],
-                ),
-              )),
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                    controller: _controllerOut,
+                    onChanged: _onChangeTextOut,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        errorText:
+                            _showValidationError ? 'Invalid number' : null,
+                        labelText: "Output",
+                        border: OutlineInputBorder()),
+                    style: Theme.of(context).textTheme.display1),
+                _buildDropdown(false, _onChangeOutput),
+              ],
+            ),
+          )),
         ],
       );
     } else {
       return GridView(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, childAspectRatio: 1.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, childAspectRatio: 1.0),
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -110,7 +114,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
                   onChanged: _onChangeTextIn,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      labelText: "Input", border: OutlineInputBorder()),
+                      errorText: _showValidationError ? 'Invalid number' : null,
+                      labelText: "Input",
+                      border: OutlineInputBorder()),
                   style: Theme.of(context).textTheme.display1,
                 ),
                 _buildDropdown(true, _onChangeInput),
@@ -120,10 +126,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
           Container(
             child: Center(
                 child: Icon(
-                  Icons.swap_horiz,
-                  size: 60.0,
-                  color: Colors.black,
-                )),
+              Icons.swap_horiz,
+              size: 60.0,
+              color: Colors.black,
+            )),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -134,6 +140,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     onChanged: _onChangeTextOut,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
+                        errorText:
+                            _showValidationError ? 'Invalid number' : null,
                         labelText: "Output",
                         border: OutlineInputBorder()),
                     style: Theme.of(context).textTheme.display1),
@@ -222,13 +230,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   void _onChangeTextIn(dynamic textInput) {
     setState(() {
-      if(textInput == null || textInput.isEmpty){
+      if (textInput == null || textInput.isEmpty) {
         _controllerOut.text = '';
-      }else{
-        try{
+      } else {
+        try {
           _controllerOut.text = _conversion(textInput, true);
           _showValidationError = false;
-        }on Exception catch (e){
+        } on Exception catch (e) {
           print('Error: $e');
           _showValidationError = true;
         }
@@ -238,13 +246,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   void _onChangeTextOut(dynamic textInput) {
     setState(() {
-      if(textInput == null || textInput.isEmpty){
+      if (textInput == null || textInput.isEmpty) {
         _controllerIn.text = '';
-      }else {
-        try{
+      } else {
+        try {
           _controllerIn.text = _conversion(textInput, false);
           _showValidationError = false;
-        }on Exception catch(e){
+        } on Exception catch (e) {
           print('Error: $e');
           _showValidationError = true;
         }
