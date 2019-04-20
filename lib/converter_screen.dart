@@ -1,53 +1,35 @@
 import 'package:flutter/material.dart';
 import 'category.dart';
+import 'conversionProvider.dart';
 import 'unit.dart';
 
 class ConverterScreen extends StatefulWidget {
-  final Category category;
+  final Category _category;
 
-  const ConverterScreen({this.category});
+  final _conversionBloc = ConversionProvider().conversionBloc;
+
+  ConverterScreen(this._category) {
+    print("converter constructor");
+    _conversionBloc.currentCat.add(_category);
+  }
 
   _ConverterScreenState createState() => _ConverterScreenState();
 }
 
 class _ConverterScreenState extends State<ConverterScreen> {
-  Unit _inputUnits;
-  Unit _outputUnits;
-
-  TextEditingController _controllerIn = TextEditingController();
-  TextEditingController _controllerOut = TextEditingController();
-
-  List<DropdownMenuItem> _unitDropdownItems;
-
-  bool _showValidationErrorIn = false;
-  bool _showValidationErrorOut = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _createDropdownItems();
-    _setDefaults();
-  }
-
-  @override
-  void didUpdateWidget(ConverterScreen oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.category != widget.category) {
-      _createDropdownItems();
-      _setDefaults();
-    }
-  }
+  TextEditingController _inController = TextEditingController();
+  TextEditingController _outController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    print("build widget");
     // TODO: implement build
     return Scaffold(
         body: _buildConverterScreen(MediaQuery.of(context).orientation));
   }
 
   Widget _buildConverterScreen(Orientation deviceOrientation) {
+    print("build converter screen");
     if (deviceOrientation == Orientation.portrait) {
       return ListView(
         children: <Widget>[
@@ -56,17 +38,30 @@ class _ConverterScreenState extends State<ConverterScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: <Widget>[
-                  TextField(
-                    controller: _controllerIn,
-                    onChanged: _onChangeTextIn,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        errorText:
-                            _showValidationErrorIn ? 'Invalid number' : null,
-                        labelText: "Input",
-                        border: OutlineInputBorder()),
-                    style: Theme.of(context).textTheme.display1,
-                  ),
+                  StreamBuilder<String>(
+                      stream: widget._conversionBloc.inputText,
+                      initialData: '',
+                      builder: (context, snapshot) {
+                        return StreamBuilder<bool>(
+                            stream: widget._conversionBloc.inputValidation,
+                            initialData: false,
+                            builder: (context, snapshotValidIn) {
+                              _inController.value = _inController.value
+                                  .copyWith(text: snapshot.data);
+                              return TextField(
+                                controller: _inController,
+                                onChanged: _onChangeTextIn,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    errorText: snapshotValidIn.data
+                                        ? 'Invalid number'
+                                        : null,
+                                    labelText: "Input",
+                                    border: OutlineInputBorder()),
+                                style: Theme.of(context).textTheme.display1,
+                              );
+                            });
+                      }),
                   _buildDropdown(true, _onChangeInput),
                 ],
               ),
@@ -85,16 +80,29 @@ class _ConverterScreenState extends State<ConverterScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                TextField(
-                    controller: _controllerOut,
-                    onChanged: _onChangeTextOut,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        errorText:
-                            _showValidationErrorOut ? 'Invalid number' : null,
-                        labelText: "Output",
-                        border: OutlineInputBorder()),
-                    style: Theme.of(context).textTheme.display1),
+                StreamBuilder<String>(
+                    stream: widget._conversionBloc.outputText,
+                    initialData: '',
+                    builder: (context, snapshot) {
+                      return StreamBuilder<Object>(
+                          stream: widget._conversionBloc.outputValidation,
+                          initialData: false,
+                          builder: (context, snapshotValidOut) {
+                            _outController.value = _outController.value
+                                .copyWith(text: snapshot.data);
+                            return TextField(
+                                controller: _outController,
+                                onChanged: _onChangeTextOut,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    errorText: snapshotValidOut.data
+                                        ? 'Invalid number'
+                                        : null,
+                                    labelText: "Output",
+                                    border: OutlineInputBorder()),
+                                style: Theme.of(context).textTheme.display1);
+                          });
+                    }),
                 _buildDropdown(false, _onChangeOutput),
               ],
             ),
@@ -110,16 +118,30 @@ class _ConverterScreenState extends State<ConverterScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                TextField(
-                  controller: _controllerIn,
-                  onChanged: _onChangeTextIn,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      errorText: _showValidationErrorIn ? 'Invalid number' : null,
-                      labelText: "Input",
-                      border: OutlineInputBorder()),
-                  style: Theme.of(context).textTheme.display1,
-                ),
+                StreamBuilder<String>(
+                    stream: widget._conversionBloc.inputText,
+                    initialData: '',
+                    builder: (context, snapshot) {
+                      return StreamBuilder<bool>(
+                          stream: widget._conversionBloc.inputValidation,
+                          initialData: false,
+                          builder: (context, snapshotValidIn) {
+                            _inController.value = _inController.value
+                                .copyWith(text: snapshot.data);
+                            return TextField(
+                              controller: _inController,
+                              onChanged: _onChangeTextIn,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  errorText: snapshotValidIn.data
+                                      ? 'Invalid number'
+                                      : null,
+                                  labelText: "Input",
+                                  border: OutlineInputBorder()),
+                              style: Theme.of(context).textTheme.display1,
+                            );
+                          });
+                    }),
                 _buildDropdown(true, _onChangeInput),
               ],
             ),
@@ -136,16 +158,29 @@ class _ConverterScreenState extends State<ConverterScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                TextField(
-                    controller: _controllerOut,
-                    onChanged: _onChangeTextOut,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        errorText:
-                            _showValidationErrorOut ? 'Invalid number' : null,
-                        labelText: "Output",
-                        border: OutlineInputBorder()),
-                    style: Theme.of(context).textTheme.display1),
+                StreamBuilder<String>(
+                    stream: widget._conversionBloc.outputText,
+                    initialData: '',
+                    builder: (context, snapshot) {
+                      return StreamBuilder<bool>(
+                          stream: widget._conversionBloc.outputValidation,
+                          initialData: false,
+                          builder: (context, snapshotValidOut) {
+                            _outController.value = _outController.value
+                                .copyWith(text: snapshot.data);
+                            return TextField(
+                                controller: _outController,
+                                onChanged: _onChangeTextOut,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    errorText: snapshotValidOut.data
+                                        ? 'Invalid number'
+                                        : null,
+                                    labelText: "Output",
+                                    border: OutlineInputBorder()),
+                                style: Theme.of(context).textTheme.display1);
+                          });
+                    }),
                 _buildDropdown(false, _onChangeOutput),
               ],
             ),
@@ -155,37 +190,23 @@ class _ConverterScreenState extends State<ConverterScreen> {
     }
   }
 
-  //create dropdown items
-  void _createDropdownItems() {
-    var dropDownItems = <DropdownMenuItem>[];
-
-    for (var unit in widget.category.units) {
-      dropDownItems.add(DropdownMenuItem(
-        value: unit.name,
-        child: Container(
-          child: Text(
-            unit.name,
-            softWrap: true,
-          ),
+  DropdownMenuItem _buildDropdownItem(dynamic unit) {
+    print("build dropdown items");
+    return DropdownMenuItem(
+      value: unit.name,
+      child: Container(
+        child: Text(
+          unit.name,
+          softWrap: true,
         ),
-      ));
-    }
-
-    setState(() {
-      _unitDropdownItems = dropDownItems;
-    });
-  }
-
-  void _setDefaults() {
-    setState(() {
-      _inputUnits = widget.category.units[0];
-      _outputUnits = widget.category.units[1];
-    });
+      ),
+    );
   }
 
   ///function that creates dropdown widget
   Widget _buildDropdown(
       bool selectionType, ValueChanged<dynamic> changeFunction) {
+    print("build dropdown");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Container(
@@ -195,87 +216,53 @@ class _ConverterScreenState extends State<ConverterScreen> {
         child: DropdownButtonHideUnderline(
           child: ButtonTheme(
               alignedDropdown: true,
-              child: DropdownButton(
-                value: selectionType ? _inputUnits.name : _outputUnits.name,
-                items: _unitDropdownItems,
-                onChanged: changeFunction,
-                isExpanded: true,
-                hint: Text("Select Units",
-                    style: TextStyle(
-                      color: Colors.black,
-                    )),
-              )),
+              child: StreamBuilder<Unit>(
+                  stream: widget._conversionBloc.inputUnit,
+                  initialData: widget._category.units[0],
+                  builder: (context, snapshotIn) {
+                    return StreamBuilder<Unit>(
+                        stream: widget._conversionBloc.outputUnit,
+                        initialData: widget._category.units[1],
+                        builder: (context, snapshotOut) {
+                          return StreamBuilder<Category>(
+                              stream: widget._conversionBloc.currentCategory,
+                              initialData: widget._category,
+                              builder: (context, snapshotDropdown) {
+                                return DropdownButton(
+                                  items: snapshotDropdown.data.units
+                                      .map(_buildDropdownItem)
+                                      .toList(),
+                                  value: selectionType
+                                      ? snapshotIn.data.name
+                                      : snapshotOut.data.name,
+                                  onChanged: changeFunction,
+                                  isExpanded: true,
+                                  hint: Text("Select Units",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      )),
+                                );
+                              });
+                        });
+                  })),
         ),
       ),
     );
   }
 
-  void _onChangeOutput(dynamic unitName) {
-    double conversion =
-        _getNewUnit(unitName).conversion / _outputUnits.conversion;
-    double newConvert = double.parse(_controllerOut.text);
-    String outputText = (newConvert * conversion).toString();
+  void _onChangeOutput(dynamic unitName) =>
+      widget._conversionBloc.outputName.add(unitName);
+  void _onChangeInput(dynamic unitName) =>
+      widget._conversionBloc.inputName.add(unitName);
+  void _onChangeTextIn(String textInput) =>
+      widget._conversionBloc.textInput.add(textInput);
+  void _onChangeTextOut(String textInput) =>
+      widget._conversionBloc.textOutput.add(textInput);
 
-    setState(() {
-      _outputUnits = _getNewUnit(unitName);
-      _controllerOut.text = outputText;
-    });
-  }
-
-  void _onChangeInput(dynamic unitName) {
-    setState(() {
-      _inputUnits = _getNewUnit(unitName);
-      _controllerOut.text = _conversion(_controllerIn.text, true);
-    });
-  }
-
-  void _onChangeTextIn(dynamic textInput) {
-    setState(() {
-      if (textInput == null || textInput.isEmpty) {
-        _controllerOut.text = '';
-        _showValidationErrorIn = false;
-      } else {
-        try {
-          _controllerOut.text = _conversion(textInput, true);
-          _showValidationErrorIn = false;
-        } on Exception catch (e) {
-          print('Error: $e');
-          _showValidationErrorIn = true;
-        }
-      }
-    });
-  }
-
-  void _onChangeTextOut(dynamic textInput) {
-    setState(() {
-      if (textInput == null || textInput.isEmpty) {
-        _controllerIn.text = '';
-        _showValidationErrorOut = false;
-      } else {
-        try {
-          _controllerIn.text = _conversion(textInput, false);
-          _showValidationErrorOut = false;
-        } on Exception catch (e) {
-          print('Error: $e');
-          _showValidationErrorOut = true;
-        }
-      }
-    });
-  }
-
-  Unit _getNewUnit(dynamic unitName) {
-    int newUnitIndex = widget.category.units
-        .indexWhere((Unit) => Unit.name.startsWith(unitName));
-    return widget.category.units[newUnitIndex];
-  }
-
-  String _conversion(dynamic textInput, bool isInput) {
-    double input = double.parse(textInput);
-    double conversion = isInput
-        ? (_outputUnits.conversion / _inputUnits.conversion)
-        : (_inputUnits.conversion / _outputUnits.conversion);
-    input = input * conversion;
-
-    return input.toString();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget._conversionBloc.dispose();
   }
 }

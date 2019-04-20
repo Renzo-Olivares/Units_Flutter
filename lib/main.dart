@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 // a package import, as shown below.
 // More details at http://dart-lang.github.io/linter/lints/avoid_relative_lib_imports.html
 import 'category_screen.dart';
+import 'categoryProvider.dart';
 
 /// The function that is called when main.dart is run.
 void main() {
@@ -29,7 +30,7 @@ class UnitConverterApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Unit Converter',
-      home: CategoryRoute(),
+      home: CategoryProvider(child: CategoryRoute()),
     );
   }
 

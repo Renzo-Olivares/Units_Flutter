@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 
-class currencyApi{
+class CurrencyApi{
   final _httpClient = HttpClient();
   final _url= 'flutter.udacity.com';
 
@@ -48,7 +48,7 @@ class currencyApi{
       return jsonResponse;
     }on Exception catch(e){
       print('$e');
-      return null;;
+      return null;
     }
   }
 }
