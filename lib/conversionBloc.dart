@@ -53,12 +53,15 @@ class ConversionBloc {
     print("conversion bloc");
     //category
     _currentCatController.stream.listen((category) {
-      print("setting category");
+      print("setting category ${category.name}");
       _category = category;
       _currentCatSubject.sink.add(_category);
 
       //units default
       setDefaultUnits(_category);
+      if(_inputUnits == null || _outputUnits == null){
+        //setDefaultUnits(_category);
+      }
     });
 
     //_onChangeInput
@@ -127,7 +130,7 @@ class ConversionBloc {
   }
 
   void setDefaultUnits(Category category) {
-    print("setting default units");
+    print("setting default units for ${category.name}");
     _inputUnits = category.units[0];
     _outputUnits = category.units[1];
     _inputUnitSubject.sink.add(_inputUnits);
@@ -135,6 +138,7 @@ class ConversionBloc {
   }
 
   Unit _getNewUnit(String unitName) {
+    print("getting new unit $unitName");
     int newUnitIndex =
         _category.units.indexWhere((unit) => unit.name.startsWith(unitName));
     return _category.units[newUnitIndex];

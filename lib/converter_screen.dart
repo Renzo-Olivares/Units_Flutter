@@ -6,24 +6,42 @@ import 'unit.dart';
 class ConverterScreen extends StatefulWidget {
   final Category _category;
 
-  final _conversionBloc = ConversionProvider().conversionBloc;
-
-  ConverterScreen(this._category) {
-    print("converter constructor");
-    _conversionBloc.currentCat.add(_category);
-  }
+  const ConverterScreen(this._category);
 
   _ConverterScreenState createState() => _ConverterScreenState();
 }
 
 class _ConverterScreenState extends State<ConverterScreen> {
-  TextEditingController _inController = TextEditingController();
-  TextEditingController _outController = TextEditingController();
+  final _conversionBloc = ConversionProvider().conversionBloc;
+  final _outController = TextEditingController();
+  final _inController = TextEditingController();
+
+  @override
+  void didUpdateWidget(ConverterScreen oldWidget) {
+    // TODO: implement didUpdateWidget
+    print("did update widget ran");
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    print("change dependencies ran");
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("init state ran");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     print("build widget");
     // TODO: implement build
+    _conversionBloc.currentCat.add(widget._category);
     return Scaffold(
         body: _buildConverterScreen(MediaQuery.of(context).orientation));
   }
@@ -39,11 +57,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
               child: Column(
                 children: <Widget>[
                   StreamBuilder<String>(
-                      stream: widget._conversionBloc.inputText,
+                      stream: _conversionBloc.inputText,
                       initialData: '',
                       builder: (context, snapshot) {
                         return StreamBuilder<bool>(
-                            stream: widget._conversionBloc.inputValidation,
+                            stream: _conversionBloc.inputValidation,
                             initialData: false,
                             builder: (context, snapshotValidIn) {
                               _inController.value = _inController.value
@@ -81,11 +99,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
             child: Column(
               children: <Widget>[
                 StreamBuilder<String>(
-                    stream: widget._conversionBloc.outputText,
+                    stream: _conversionBloc.outputText,
                     initialData: '',
                     builder: (context, snapshot) {
                       return StreamBuilder<Object>(
-                          stream: widget._conversionBloc.outputValidation,
+                          stream: _conversionBloc.outputValidation,
                           initialData: false,
                           builder: (context, snapshotValidOut) {
                             _outController.value = _outController.value
@@ -119,11 +137,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
             child: Column(
               children: <Widget>[
                 StreamBuilder<String>(
-                    stream: widget._conversionBloc.inputText,
+                    stream: _conversionBloc.inputText,
                     initialData: '',
                     builder: (context, snapshot) {
                       return StreamBuilder<bool>(
-                          stream: widget._conversionBloc.inputValidation,
+                          stream: _conversionBloc.inputValidation,
                           initialData: false,
                           builder: (context, snapshotValidIn) {
                             _inController.value = _inController.value
@@ -159,11 +177,11 @@ class _ConverterScreenState extends State<ConverterScreen> {
             child: Column(
               children: <Widget>[
                 StreamBuilder<String>(
-                    stream: widget._conversionBloc.outputText,
+                    stream: _conversionBloc.outputText,
                     initialData: '',
                     builder: (context, snapshot) {
                       return StreamBuilder<bool>(
-                          stream: widget._conversionBloc.outputValidation,
+                          stream: _conversionBloc.outputValidation,
                           initialData: false,
                           builder: (context, snapshotValidOut) {
                             _outController.value = _outController.value
@@ -217,15 +235,15 @@ class _ConverterScreenState extends State<ConverterScreen> {
           child: ButtonTheme(
               alignedDropdown: true,
               child: StreamBuilder<Unit>(
-                  stream: widget._conversionBloc.inputUnit,
+                  stream: _conversionBloc.inputUnit,
                   initialData: widget._category.units[0],
                   builder: (context, snapshotIn) {
                     return StreamBuilder<Unit>(
-                        stream: widget._conversionBloc.outputUnit,
+                        stream: _conversionBloc.outputUnit,
                         initialData: widget._category.units[1],
                         builder: (context, snapshotOut) {
                           return StreamBuilder<Category>(
-                              stream: widget._conversionBloc.currentCategory,
+                              stream: _conversionBloc.currentCategory,
                               initialData: widget._category,
                               builder: (context, snapshotDropdown) {
                                 return DropdownButton(
@@ -251,18 +269,18 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   void _onChangeOutput(dynamic unitName) =>
-      widget._conversionBloc.outputName.add(unitName);
+      _conversionBloc.outputName.add(unitName);
   void _onChangeInput(dynamic unitName) =>
-      widget._conversionBloc.inputName.add(unitName);
+      _conversionBloc.inputName.add(unitName);
   void _onChangeTextIn(String textInput) =>
-      widget._conversionBloc.textInput.add(textInput);
+      _conversionBloc.textInput.add(textInput);
   void _onChangeTextOut(String textInput) =>
-      widget._conversionBloc.textOutput.add(textInput);
+      _conversionBloc.textOutput.add(textInput);
 
   @override
   void dispose() {
     // TODO: implement dispose
+    _conversionBloc.dispose();
     super.dispose();
-    widget._conversionBloc.dispose();
   }
 }

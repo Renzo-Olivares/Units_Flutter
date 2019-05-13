@@ -7,21 +7,22 @@ import 'category_tile.dart';
 import 'conversionProvider.dart';
 
 class CategoryRoute extends StatefulWidget {
-  final _categoryBloc = CategoryProvider().categoryBloc;
 
   @override
   _CategoryRouteState createState() => _CategoryRouteState();
 }
 
 class _CategoryRouteState extends State<CategoryRoute> {
+  final _categoryBloc = CategoryProvider().categoryBloc;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return StreamBuilder<Category>(
-        stream: widget._categoryBloc.defaultCategory,
+        stream: _categoryBloc.defaultCategory,
         builder: (context, snapshotDefault) {
           return StreamBuilder<Category>(
-              stream: widget._categoryBloc.currentCategory,
+              stream: _categoryBloc.currentCategory,
               initialData: snapshotDefault.data,
               builder: (context, snapshotCurrent) {
                 if (!snapshotDefault.hasData) {
@@ -59,7 +60,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   }
 
   void _onCategoryTap(Category category) {
-    widget._categoryBloc.currentCat.add(category);
+    _categoryBloc.currentCat.add(category);
   }
 
   Widget _buildCategoryScreen(Orientation deviceOrientation) {
@@ -67,7 +68,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
 
     if (deviceOrientation == Orientation.portrait) {
       return StreamBuilder<List<Category>>(
-          stream: widget._categoryBloc.categories,
+          stream: _categoryBloc.categories,
           initialData: List<Category>(),
           builder: (context, snapshot) {
             return ListView(
@@ -77,7 +78,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
           });
     } else {
       return StreamBuilder<List<Category>>(
-          stream: widget._categoryBloc.categories,
+          stream: _categoryBloc.categories,
           initialData: List<Category>(),
           builder: (context, snapshot) {
             return GridView(
@@ -99,7 +100,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   @override
   void dispose() {
     // TODO: implement dispose
-    widget._categoryBloc.dispose();
+    _categoryBloc.dispose();
     super.dispose();
   }
 }

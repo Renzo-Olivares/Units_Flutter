@@ -28,6 +28,8 @@ class UnitConverterApp extends StatelessWidget {
         systemNavigationBarIconBrightness: Brightness.dark));
     _updateNavigationBarIconBrightness();
     return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       title: 'Unit Converter',
       home: CategoryProvider(child: CategoryRoute()),
