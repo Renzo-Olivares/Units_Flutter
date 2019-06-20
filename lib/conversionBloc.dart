@@ -50,17 +50,14 @@ class ConversionBloc {
   Stream<bool> get outputValidation => _outputValidationSubject.stream;
 
   ConversionBloc() {
-    print("conversion bloc");
     //category
     _currentCatController.stream.listen((category) {
-      print("setting category ${category.name}");
       _category = category;
       _currentCatSubject.sink.add(_category);
     });
 
     //_onChangeInput
     _inputUnitController.stream.listen((unitName) {
-      print("changing input unit $unitName");
       _inputUnits = _getNewUnit(unitName);
       _inputUnitSubject.sink.add(_inputUnits);
       if (_textIn != null) {
@@ -70,7 +67,6 @@ class ConversionBloc {
 
     //_onChangeOutput
     _outputUnitController.stream.listen((unitName) {
-      print("changing output unit $unitName");
       _outputUnits = _getNewUnit(unitName);
       _outputUnitSubject.sink.add(_outputUnits);
 
@@ -124,7 +120,6 @@ class ConversionBloc {
   }
 
   void setDefaultUnits(Category category) {
-    print("setting default units for ${category.name}");
     _inputUnits = category.units[0];
     _outputUnits = category.units[1];
     _inputUnitSubject.sink.add(_inputUnits);
@@ -132,14 +127,12 @@ class ConversionBloc {
   }
 
   Unit _getNewUnit(String unitName) {
-    print("getting new unit $unitName");
     int newUnitIndex =
         _category.units.indexWhere((unit) => unit.name.startsWith(unitName));
     return _category.units[newUnitIndex];
   }
 
   String _conversion(String textInput, bool isInput) {
-    print("converting $textInput");
     double input = double.parse(textInput);
     double conversion = isInput
         ? (_outputUnits.conversion / _inputUnits.conversion)
@@ -150,7 +143,6 @@ class ConversionBloc {
   }
 
   void dispose() {
-    print("disposing of conversion bloc streams");
     _currentCatSubject.close();
     _currentCatController.close();
 

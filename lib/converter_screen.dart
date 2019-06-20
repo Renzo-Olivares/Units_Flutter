@@ -19,8 +19,6 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   @override
   void didUpdateWidget(ConverterScreen oldWidget) {
-    // TODO: implement didUpdateWidget
-    print("did update widget ran");
     super.didUpdateWidget(oldWidget);
     if(oldWidget._category != widget._category){
       //ser default units
@@ -30,24 +28,21 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    print("change dependencies ran");
     super.didChangeDependencies();
-    _conversionBloc = ConversionProvider.of(context);
-    _conversionBloc.setDefaultUnits(widget._category);
+    if(_conversionBloc == null){
+      _conversionBloc = ConversionProvider.of(context);
+      _conversionBloc.setDefaultUnits(widget._category);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    print("converter screen - build widget");
-    // TODO: implement build
     _conversionBloc.currentCat.add(widget._category);
     return Scaffold(
         body: _buildConverterScreen(MediaQuery.of(context).orientation));
   }
 
   Widget _buildConverterScreen(Orientation deviceOrientation) {
-    print("build converter screen method");
     if (deviceOrientation == Orientation.portrait) {
       return ListView(
         children: <Widget>[
@@ -209,7 +204,6 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   DropdownMenuItem _buildDropdownItem(dynamic unit) {
-    print("build dropdown items ${unit.name}");
     return DropdownMenuItem(
       value: unit.name,
       child: Container(
@@ -224,7 +218,6 @@ class _ConverterScreenState extends State<ConverterScreen> {
   ///function that creates dropdown widget
   Widget _buildDropdown(
       bool selectionType, ValueChanged<dynamic> changeFunction) {
-    print("build dropdown");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Container(
@@ -279,8 +272,6 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    print("converter screen dispose");
     _conversionBloc.dispose();
     super.dispose();
   }
