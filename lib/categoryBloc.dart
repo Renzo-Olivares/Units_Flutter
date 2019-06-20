@@ -61,6 +61,7 @@ class CategoryBloc {
   Stream<Category> get currentCategory => _currentCatSubject.stream;
 
   CategoryBloc() {
+    print("category BLOC constructor");
     _getCategories();
 
     _categoriesSubject.add(_categories);
@@ -71,6 +72,7 @@ class CategoryBloc {
   }
 
   Future<void> _getCategories() async {
+    print("categorybloc - getiing categories");
     final json = rootBundle.loadString('assets/data/regular_units.json');
 
     final data = JsonDecoder().convert(await json);
@@ -95,6 +97,7 @@ class CategoryBloc {
   }
 
   Future<void> _getApiCategory() async {
+    print("categorybloc - getiing api category");
     _categories.add(Category(
       color: _colors.last,
       icon: _icons.last,
@@ -121,6 +124,7 @@ class CategoryBloc {
   }
 
   void dispose(){
+    print("categorybloc - disposing");
     _currentCatController.close();
     _currentCatSubject.close();
   }

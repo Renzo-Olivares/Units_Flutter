@@ -56,12 +56,6 @@ class ConversionBloc {
       print("setting category ${category.name}");
       _category = category;
       _currentCatSubject.sink.add(_category);
-
-      //units default
-      setDefaultUnits(_category);
-      if(_inputUnits == null || _outputUnits == null){
-        //setDefaultUnits(_category);
-      }
     });
 
     //_onChangeInput
@@ -103,7 +97,7 @@ class ConversionBloc {
           _outputTextSubject.sink.add(_conversion(_textIn, true));
           _inputValidationSubject.sink.add(false);
         } on Exception catch (e) {
-          print('Error: $e');
+          print('Error caught: $e');
           _inputValidationSubject.sink.add(true);
         }
       }
@@ -122,7 +116,7 @@ class ConversionBloc {
           _inputTextSubject.sink.add(_conversion(_textOut, false));
           _outputValidationSubject.sink.add(false);
         } on Exception catch (e) {
-          print('Error: $e');
+          print('Error caught: $e');
           _outputValidationSubject.sink.add(true);
         }
       }
@@ -145,6 +139,7 @@ class ConversionBloc {
   }
 
   String _conversion(String textInput, bool isInput) {
+    print("converting $textInput");
     double input = double.parse(textInput);
     double conversion = isInput
         ? (_outputUnits.conversion / _inputUnits.conversion)
@@ -155,6 +150,7 @@ class ConversionBloc {
   }
 
   void dispose() {
+    print("disposing of conversion bloc streams");
     _currentCatSubject.close();
     _currentCatController.close();
 

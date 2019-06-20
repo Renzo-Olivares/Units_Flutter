@@ -4,6 +4,7 @@ import 'backdrop_widget.dart';
 import 'converter_screen.dart';
 import 'category.dart';
 import 'category_tile.dart';
+import 'categoryBloc.dart';
 import 'conversionProvider.dart';
 
 class CategoryRoute extends StatefulWidget {
@@ -13,10 +14,18 @@ class CategoryRoute extends StatefulWidget {
 }
 
 class _CategoryRouteState extends State<CategoryRoute> {
-  final _categoryBloc = CategoryProvider().categoryBloc;
+  CategoryBloc _categoryBloc;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    _categoryBloc = CategoryProvider.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("category screen build method");
     // TODO: implement build
     return StreamBuilder<Category>(
         stream: _categoryBloc.defaultCategory,
@@ -26,6 +35,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
               initialData: snapshotDefault.data,
               builder: (context, snapshotCurrent) {
                 if (!snapshotDefault.hasData) {
+                  print("waiting for categories");
                   return Center(
                     child: Container(
                       height: 180.0,
@@ -34,6 +44,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
                     ),
                   );
                 } else {
+                  print("creating backdrop");
                   return Backdrop(
                     currentCategory: snapshotCurrent.data == null
                         ? snapshotDefault.data
@@ -59,13 +70,11 @@ class _CategoryRouteState extends State<CategoryRoute> {
         });
   }
 
-  void _onCategoryTap(Category category) {
-    _categoryBloc.currentCat.add(category);
-  }
+  void _onCategoryTap(Category category) => _categoryBloc.currentCat.add(category);
 
   Widget _buildCategoryScreen(Orientation deviceOrientation) {
     //final categoryBloc = CategoryProvider.of(context);
-
+    print("building category screen function");
     if (deviceOrientation == Orientation.portrait) {
       return StreamBuilder<List<Category>>(
           stream: _categoryBloc.categories,
@@ -91,6 +100,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
   }
 
   Widget _buildCategoryTile(Category category) {
+    print("building category tile ${category.name}");
     return CategoryTile(
       category: category,
       onTap: _onCategoryTap,
@@ -99,6 +109,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
 
   @override
   void dispose() {
+    print("disposing category screen");
     // TODO: implement dispose
     _categoryBloc.dispose();
     super.dispose();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'category.dart';
 import 'conversionProvider.dart';
+import 'conversionBloc.dart';
 import 'unit.dart';
 
 class ConverterScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class ConverterScreen extends StatefulWidget {
 }
 
 class _ConverterScreenState extends State<ConverterScreen> {
-  final _conversionBloc = ConversionProvider().conversionBloc;
+  ConversionBloc _conversionBloc;
   final _outController = TextEditingController();
   final _inController = TextEditingController();
 
@@ -21,6 +22,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
     // TODO: implement didUpdateWidget
     print("did update widget ran");
     super.didUpdateWidget(oldWidget);
+    if(oldWidget._category != widget._category){
+      //ser default units
+      _conversionBloc.setDefaultUnits(widget._category);
+    }
   }
 
   @override
@@ -28,18 +33,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
     // TODO: implement didChangeDependencies
     print("change dependencies ran");
     super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    print("init state ran");
-    super.initState();
+    _conversionBloc = ConversionProvider.of(context);
+    _conversionBloc.setDefaultUnits(widget._category);
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build widget");
+    print("converter screen - build widget");
     // TODO: implement build
     _conversionBloc.currentCat.add(widget._category);
     return Scaffold(
@@ -47,7 +47,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   Widget _buildConverterScreen(Orientation deviceOrientation) {
-    print("build converter screen");
+    print("build converter screen method");
     if (deviceOrientation == Orientation.portrait) {
       return ListView(
         children: <Widget>[
@@ -102,7 +102,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     stream: _conversionBloc.outputText,
                     initialData: '',
                     builder: (context, snapshot) {
-                      return StreamBuilder<Object>(
+                      return StreamBuilder<bool>(
                           stream: _conversionBloc.outputValidation,
                           initialData: false,
                           builder: (context, snapshotValidOut) {
@@ -209,7 +209,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   DropdownMenuItem _buildDropdownItem(dynamic unit) {
-    print("build dropdown items");
+    print("build dropdown items ${unit.name}");
     return DropdownMenuItem(
       value: unit.name,
       child: Container(
@@ -280,6 +280,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
+    print("converter screen dispose");
     _conversionBloc.dispose();
     super.dispose();
   }
