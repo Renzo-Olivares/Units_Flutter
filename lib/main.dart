@@ -22,11 +22,9 @@ void main() {
 class UnitConverterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark));
-    _updateNavigationBarIconBrightness();
     return MaterialApp(
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
@@ -34,18 +32,5 @@ class UnitConverterApp extends StatelessWidget {
       title: 'Unit Converter',
       home: CategoryProvider(child: CategoryRoute()),
     );
-  }
-
-  void _updateNavigationBarIconBrightness() async {
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      if (msg == AppLifecycleState.resumed.toString()) {
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle.light.copyWith(
-            systemNavigationBarColor: Colors.white,
-            systemNavigationBarIconBrightness: Brightness.dark,
-          ),
-        );
-      }
-    });
   }
 }
